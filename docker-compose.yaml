@@ -1,0 +1,10 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: voicely-chat-container
+    ports:
+      - 3020:3020
+    environment:
+      NODE_ENV: production
