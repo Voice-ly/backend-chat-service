@@ -5,14 +5,14 @@ import { userHandler } from "./handlers/userHandler";
 import { chatHandler } from "./handlers/chatHandler";
 
 const origins = (process.env.ORIGIN ?? "")
-  .split(",")
-  .map(s => s.trim())
-  .filter(Boolean);
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
 
 const io = new Server({
-  cors: {
-    origin: origins
-  }
+    cors: {
+        origin: origins,
+    },
 });
 
 const port = Number(process.env.PORT);
@@ -24,9 +24,9 @@ console.log(`Server is running on port ${port}`);
 io.use(authMiddleware);
 
 io.on("connection", (socket: Socket) => {
-  console.log("A user connected with id: ", socket.id);
+    console.log("A user connected with id: ", socket.id);
 
-  // Handlers
-  userHandler(io, socket);
-  chatHandler(io, socket);
+    // Handlers
+    userHandler(io, socket);
+    chatHandler(io, socket);
 });
