@@ -12,18 +12,18 @@ const origins = (process.env.ORIGIN ?? "")
     .map((s) => s.trim())
     .filter(Boolean);
 
-// Log the allowed origins for debugging
-console.log("CORS allowed origins:", origins);
+console.log(`[DEBUG CORS] Orígenes permitidos:`, origins);
 
 const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer, { cors: { origin: origins } });
 
-// ⭐️ MIDDLEWARES NECESARIOS PARA MANEJAR PETICIONES HTTP
+// Se pasa el httpServer como primer argumento, y luego el objeto de configuración.
+const io = new Server(httpServer, { cors: { origin: origins } }); 
+
+// MIDDLEWARES NECESARIOS PARA MANEJAR PETICIONES HTTP
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 
-// NUEVO ENDPOINT HTTP REST
 // Este es el endpoint que el meeting-service llamará: GET /api/history/:meetingId
 app.get("/api/history/:meetingId", async (req: Request, res: Response) => {
     const meetingId = req.params.meetingId;
@@ -50,8 +50,7 @@ app.get("/api/history/:meetingId", async (req: Request, res: Response) => {
 // Crear servidor HTTP
 const port = Number(process.env.PORT) || 3002;
 
-// Crear instancia de Socket.IO adjuntada al servidor HTTP
-// Middleware
+// Middleware de Socket.IO
 io.use(authMiddleware);
 
 io.on("connection", (socket: Socket) => {
