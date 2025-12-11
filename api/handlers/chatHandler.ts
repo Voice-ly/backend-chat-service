@@ -1,5 +1,6 @@
 import { Server, Socket } from "socket.io";
 import { onlineUsers } from "./userHandler";
+import { storeMessage } from "../services/chatService";
 
 type ChatMessagePayload = {
     userId: string;
@@ -14,15 +15,22 @@ export const chatHandler = (io: Server, socket: Socket) => {
         const trimmedMessage = payload?.message?.trim();
         if (!trimmedMessage || !payload.roomId) return;
 
-        const sender = onlineUsers.find((user) => user.socketId === socket.id) ?? null;
+        const sender =
+            onlineUsers.find((user) => user.socketId === socket.id) ?? null;
 
         const outgoingMessage = {
             userId: payload.userId || sender?.userId || socket.id,
             name: sender?.name || payload.name || "Unknown",
             message: trimmedMessage,
             timestamp: payload.timestamp ?? new Date().toISOString(),
-            roomId: payload.roomId
+            roomId: payload.roomId,
         };
+
+        // LLAMADA ASÍNCRONA AL SERVICIO DE FIRESTORE
+        // Usamos un catch para que no afecte la emisión en tiempo real si falla la DB
+        storeMessage(outgoingMessage).catch(err => {
+            console.error("Fallo al guardar mensaje en DB:", err);
+        });
 
         io.to(payload.roomId).emit("chat:message", outgoingMessage);
 
