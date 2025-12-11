@@ -25,10 +25,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Este es el endpoint que el meeting-service llamará: GET history/:meetingId
-app.get("history/:meetingId", async (req: Request, res: Response) => {
+app.get("/history/:meetingId", async (req: Request, res: Response) => {
     const meetingId = req.params.meetingId;
 
     if (!meetingId) {
+        
         return res.status(400).json({ success: false, message: "Falta el meetingId" });
     }
 
