@@ -24,8 +24,8 @@ const io = new Server(httpServer, { cors: { origin: "*" } });
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 
-// Este es el endpoint que el meeting-service llamará: GET /api/history/:meetingId
-app.get("/api/history/:meetingId", async (req: Request, res: Response) => {
+// Este es el endpoint que el meeting-service llamará: GET history/:meetingId
+app.get("history/:meetingId", async (req: Request, res: Response) => {
     const meetingId = req.params.meetingId;
 
     if (!meetingId) {
