@@ -1,5 +1,6 @@
 import { Server, Socket } from "socket.io";
 import { onlineUsers } from "./userHandler";
+import { storeMessage } from "../services/chatService";
 
 type ChatMessagePayload = {
     userId: string;
@@ -24,6 +25,12 @@ export const chatHandler = (io: Server, socket: Socket) => {
             timestamp: payload.timestamp ?? new Date().toISOString(),
             roomId: payload.roomId,
         };
+
+        // LLAMADA ASÍNCRONA AL SERVICIO DE FIRESTORE
+        // Usamos un catch para que no afecte la emisión en tiempo real si falla la DB
+        storeMessage(outgoingMessage).catch(err => {
+            console.error("Fallo al guardar mensaje en DB:", err);
+        });
 
         io.to(payload.roomId).emit("chat:message", outgoingMessage);
 
