@@ -18,7 +18,7 @@ const app = express();
 const httpServer = createServer(app);
 
 // Se pasa el httpServer como primer argumento, y luego el objeto de configuración.
-const io = new Server(httpServer, { cors: { origin: "https://voicely-eight.vercel.app" } }); 
+const io = new Server(httpServer, { cors: { origin: "*" } }); 
 
 // MIDDLEWARES NECESARIOS PARA MANEJAR PETICIONES HTTP
 app.use(express.json()); 
