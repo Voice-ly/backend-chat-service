@@ -12,6 +12,8 @@ const origins = (process.env.ORIGIN ?? "")
     .map((s) => s.trim())
     .filter(Boolean);
 
+console.log("CORS allowed origins:", origins);
+
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, { cors: { origin: origins } });
